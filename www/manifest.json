@@ -1,0 +1,12 @@
+
+{
+  "name": "Amcoman App",
+  "short_name": "Amcoman App",
+  "start_url": "index.html",
+  "display": "standalone",
+  "icons": [{
+    "src": "amcomanlogo.png",
+    "sizes": "512x512",
+    "type": "image/png"
+  }]
+}
