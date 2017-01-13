@@ -11,6 +11,7 @@ angular.module('starter.controllers', [])
 
   // Form data for the login modal
   $scope.loginData = {};
+  $scope.registerData = {};
 
   // Create the login modal that we will use later
  $ionicModal.fromTemplateUrl('templates/login.html', {
@@ -53,22 +54,15 @@ angular.module('starter.controllers', [])
     console.log('Doing login', $scope.loginData);
 	console.log('Using authFactory.login', $scope.loginData);
 	authFactory.login($scope.loginData);
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
+	$scope.closeLogin();
   };
 
     // Perform the login action when the user submits the login form
   $scope.doRegister = function () {
-      console.log('Doing Registration', $scope.registerData);
-
-      // Simulate a login delay. Remove this and replace with your login
-      // code if using a login system
-      $timeout(function () {
-          $scope.closeRegister();
-      }, 1000);
+	console.log('Doing Registration ' + $scope.registerData);
+	authFactory.register($scope.registerData);
+	$scope.closeRegister();
+	console.log('Registration Finished');
   };
 
 })
@@ -88,5 +82,61 @@ angular.module('starter.controllers', [])
 })
 .controller('AdminCtrl', function () {
 }
-);
+)
+.controller('OrganizationCtrl', ['$scope',  '$localStorage', 'OrgFactory', function ($scope,  $localStorage, OrgFactory) {
+	$scope.orgs = {};
+	$scope.addNewFormIsVisible = false;
+	$scope.processMessage  = '';
+	$scope.showProcessMessage = false;
+	$scope.newOrg = {organizationName : '', contactName: '',  contactEmail: '', contactPhone: '' };
+	OrgFactory.query( 
+	function (response){
+		$scope.showProcessMessage = false;
+		$scope.orgs=response;
+	},
+	function(response){
+		console.log('Error found in controller while retrieving the organizations ');		
+		$scope.processMessage = response.data;
+		$scope.showProcessMessage = true;
+	}
+	);
+	
+	$scope.showAddNewForm = function(isVisible){
+		$scope.showProcessMessage = false;
+		$scope.addNewFormIsVisible = isVisible;
+	}
+	
+	$scope.addNewOrg = function(){		
+		$scope.processMessage  = '';
+		$scope.showProcessMessage = false;
+		OrgFactory.save($scope.newOrg, 
+			function (response){
+				console.log('new organization Created id:' + 'response._id');
+				OrgFactory.query( 
+				function (response){
+					$scope.orgs=response;
+				},
+				function(response){
+					console.log('Error found in controller while retrieving the organizations ');
+				}
+				);
+			},
+			function (response){
+				console.log('failed to create new organization' );
+			}
+		);
+		$scope.addNewFormIsVisible = false;
+		$scope.newOrg = {organizationName : '', contactName: '',  contactEmail: '', contactPhone: '' }
+	}
+	
+	$scope.cancelAddNew= function(){
+		$scope.processMessage  = '';
+		$scope.showProcessMessage = false;
+		$scope.addNewFormIsVisible = false;
+		$scope.newOrg = {organizationName : '', contactName: '',  contactEmail: '', contactPhone: '' }
+	}
+}])
+
+;
+
 

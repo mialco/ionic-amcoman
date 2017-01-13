@@ -1,7 +1,9 @@
 'use strict';
 //Assignment 3
 angular.module('conFusion.services', ['ngResource'])
-        .constant("baseURL", "http://192.168.1.20:3022/")
+        //.constant("baseURL", "http://192.168.1.20:3022/")
+        //.constant("baseURL", "localhost:3022/")
+        .constant("baseURL", "http://10.30.97.87:3022/")
         .factory('menuFactory', ['$resource', 'baseURL', function ($resource, baseURL) {
 
              return $resource(baseURL + "dishes/:id", null, {
@@ -185,5 +187,19 @@ angular.module('conFusion.services', ['ngResource'])
 			return authFac;
 			
 		}])
+		.factory('OrgFactory', ['$resource', '$http', '$localStorage', '$rootScope', '$window', 'baseURL', function($resource, $http, $localStorage, $rootScope, $window, baseURL){
+			
+
+			return $resource(baseURL + "orgs", null, {
+				'update': {
+					method: 'PUT'
+				},
+				'query':  {method:'GET', isArray:true},
+				'save' : {method: 'POST'}
+			});
+			
+			
+		}])
+		
 		
 ;
